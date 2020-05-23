@@ -1,3 +1,22 @@
+/*
+ *  _______________ 
+ * /_  ___________/ 
+ *   | | \| '-' |   Nathan Huisman
+ *   | |\ ' .-. |   `-- nathanhuisman.github.io
+ *   |_| \__| |_|   
+ *
+ *   My personal st build
+ *
+ *   Patches (in no particular order):
+ *   - font2
+ *   - boxdraw
+ *   - alpha
+ *   - anysize
+ *   - autosync
+ *   - clipboard
+ *   - xresources
+ *   See https://st.suckless.org/patches/ for more info.
+ */
 /* See LICENSE file for copyright and license details. */
 
 /*
@@ -5,8 +24,17 @@
  *
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
-static char *font = "Liberation Mono:pixelsize=12:antialias=true:autohint=true";
+static char *font = "Source Code Pro:pixelsize=16:antialias=true:autohint=true";
+/* Spare fonts */
+static char *font2[] = { "PowerlineSymbols:pixelsize=19:antialias=true:autohint=true",
+                         "Symbols Nerd Font" };
+
+static float glyphoffsetx = 0.0;
+static float glyphoffsety = 0.0;
+
 static int borderpx = 2;
+
+
 
 /*
  * What program is execed by st depends of these precedence rules:
@@ -29,12 +57,19 @@ char *vtiden = "\033[?6c";
 static float cwscale = 1.0;
 static float chscale = 1.0;
 
+/* 
+ * boxdrawing
+ */
+const int boxdraw = 1;
+const int boxdraw_braille = 0;
+const int boxdraw_bold = 1;
+
 /*
  * word delimiter string
  *
  * More advanced example: L" `'\"()[]{}"
  */
-wchar_t *worddelimiters = L" ";
+wchar_t *worddelimiters = L" `'\"()[]{}";
 
 /* selection timeouts (in milliseconds) */
 static unsigned int doubleclicktimeout = 300;
@@ -43,9 +78,15 @@ static unsigned int tripleclicktimeout = 600;
 /* alt screens */
 int allowaltscreen = 1;
 
+/*
+ * autosync
+ * replaces:
+ * static unsigned int xfps = 120;
+ * static unsigned int actionfps = 30;
+ */
+const int minlatency = 8;
+const int maxlatency = 33;
 /* frames per second st should at maximum draw to the screen */
-static unsigned int xfps = 120;
-static unsigned int actionfps = 30;
 
 /*
  * blinking timeout (set to 0 to disable blinking) for the terminal blinking
@@ -62,7 +103,7 @@ static unsigned int cursorthickness = 2;
  * bell volume. It must be a value between -100 and 100. Use 0 for disabling
  * it
  */
-static int bellvolume = 0;
+static int bellvolume = 100;
 
 /* default TERM value */
 char *termname = "st-256color";
@@ -83,6 +124,9 @@ char *termname = "st-256color";
  *	stty tabs
  */
 unsigned int tabspaces = 8;
+
+/* bg opacity */
+float alpha = 0.8;
 
 /* Terminal colors (16 first used in escape sequence) */
 static const char *colorname[] = {
@@ -109,8 +153,9 @@ static const char *colorname[] = {
 	[255] = 0,
 
 	/* more colors can be added after 255 to use with DefaultXX */
-	"#cccccc",
-	"#555555",
+	"black",
+	"gray90",
+    "gray90",
 };
 
 
@@ -118,10 +163,10 @@ static const char *colorname[] = {
  * Default colors (colorname index)
  * foreground, background, cursor, reverse cursor
  */
-unsigned int defaultfg = 7;
-unsigned int defaultbg = 0;
-static unsigned int defaultcs = 256;
-static unsigned int defaultrcs = 257;
+unsigned int defaultfg = 257;
+unsigned int defaultbg = 256;
+static unsigned int defaultcs = 258;
+static unsigned int defaultrcs = 258;
 
 /*
  * Default shape of cursor
@@ -151,6 +196,46 @@ static unsigned int mousebg = 0;
  * doesn't match the ones requested.
  */
 static unsigned int defaultattr = 11;
+
+/*
+ * Xresources preferences to load at startup
+ */
+ResourcePref resources[] = {
+		{ "font",         STRING,  &font },
+		{ "color0",       STRING,  &colorname[0] },
+		{ "color1",       STRING,  &colorname[1] },
+		{ "color2",       STRING,  &colorname[2] },
+		{ "color3",       STRING,  &colorname[3] },
+		{ "color4",       STRING,  &colorname[4] },
+		{ "color5",       STRING,  &colorname[5] },
+		{ "color6",       STRING,  &colorname[6] },
+		{ "color7",       STRING,  &colorname[7] },
+		{ "color8",       STRING,  &colorname[8] },
+		{ "color9",       STRING,  &colorname[9] },
+		{ "color10",      STRING,  &colorname[10] },
+		{ "color11",      STRING,  &colorname[11] },
+		{ "color12",      STRING,  &colorname[12] },
+		{ "color13",      STRING,  &colorname[13] },
+		{ "color14",      STRING,  &colorname[14] },
+		{ "color15",      STRING,  &colorname[15] },
+		{ "background",   STRING,  &colorname[256] },
+		{ "foreground",   STRING,  &colorname[257] },
+		{ "cursorColor",  STRING,  &colorname[258] },
+		{ "termname",     STRING,  &termname },
+		{ "shell",        STRING,  &shell },
+		/* 
+		 * Not needed for autosync
+		 *
+		 * { "xfps",         INTEGER, &xfps },
+		{ "actionfps",    INTEGER, &actionfps }, */
+		{ "blinktimeout", INTEGER, &blinktimeout },
+		{ "bellvolume",   INTEGER, &bellvolume },
+		{ "tabspaces",    INTEGER, &tabspaces },
+		{ "borderpx",     INTEGER, &borderpx },
+		{ "cwscale",      FLOAT,   &cwscale },
+		{ "chscale",      FLOAT,   &chscale },
+		{ "alpha",        FLOAT,   &alpha },
+};
 
 /*
  * Force mouse select/shortcuts while mask is active (when MODE_MOUSE is set).
