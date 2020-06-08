@@ -26,7 +26,7 @@
  */
 static char *font = "Source Code Pro:pixelsize=16:antialias=true:autohint=true";
 /* Spare fonts */
-static char *font2[] = { "Sauce Code Pro Nerd Font Complete:pixelsize=16:antialias=true:autohint=true" };
+static char *font2[] = { "Symbols Nerd Font Complete:pixelsize=16:antialias=true:autohint=true" };
 
 static float glyphoffsetx = 0.0;
 static float glyphoffsety = 0.0;
