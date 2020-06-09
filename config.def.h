@@ -15,6 +15,7 @@
  *   - autosync
  *   - clipboard
  *   - xresources
+ *   - scrollback
  *   See https://st.suckless.org/patches/ for more info.
  */
 /* See LICENSE file for copyright and license details. */

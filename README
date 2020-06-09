@@ -1,6 +1,8 @@
-st - simple terminal
+my fork of st - simple terminal
 --------------------
-st is a simple terminal emulator for X which sucks less.
+This is my (Nathan Huisman <huis.nathan@gmail.com>) patch of st.
+
+St is a simple terminal emulator for X which sucks less.
 
 
 Requirements
