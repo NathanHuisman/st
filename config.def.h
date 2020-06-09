@@ -16,6 +16,7 @@
  *   - clipboard
  *   - xresources
  *   - scrollback
+ *   - desktopentry
  *   See https://st.suckless.org/patches/ for more info.
  */
 /* See LICENSE file for copyright and license details. */
